@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<!-- タイトルを変更してください -->
+<title>SPARQL Timeliner</title>
+
+<!-- SPARQLエンドポイント -->
+<meta name="sparql-endpoint" 
+content="http://lodcu.cs.chubu.ac.jp/SparqlEPCU/RDFServer.jsp?reqtype=api&project=toukaido" />
+
+<!-- SPARQLクエリ -->
+<meta name="sparql-query" content="
+PREFIX schema: <http://schema.org/>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterm: <http://purl.org/dc/terms/>
+select distinct ?title ?start ?lat ?long ?description ?image 
+where {
+?link a <toukaido:浮世絵>;
+rdfs:label ?title;dcterm:created ?start;
+schema:image ?image;
+dcterm:description ?description;
+geo:lat ?lat;
+geo:long ?long.
+}
+LIMIT 100
+" />
+
+<!-- 出力フォーマット(デフォルト:json) -->
+<!--
+<meta name="sparql-format" content="json" />
+-->
+
+<!-- データタイプ指定(jsonpの場合に利用) -->
+<!--
+<meta name="sparql-datatype" content="jsonp" />
+-->
+
+<!-- POIクラスタリング-->
+<!--
+<meta name="poi-clustering" content="true" />
+-->
+
+<meta name="description" content="SPARQL Timeliner" />
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<link rel="stylesheet" href="//uedayou.net/SPARQLTimeliner/vendor/recline/vendor/timeline/css/timeline.css">
+<link rel="stylesheet" href="//uedayou.net/SPARQLTimeliner/vendor/recline/dist/recline.css">
+<link rel="stylesheet" href="//uedayou.net/SPARQLTimeliner/vendor/leaflet/0.7.2/leaflet.css">
+<link rel="stylesheet" href="//uedayou.net/SPARQLTimeliner/vendor/leaflet.markercluster/MarkerCluster.css">
+<link rel="stylesheet" href="//uedayou.net/SPARQLTimeliner/vendor/leaflet.markercluster/MarkerCluster.Default.css">
+<link rel="stylesheet" href="//uedayou.net/SPARQLTimeliner/vendor/leaflet.label/leaflet0.7/leaflet.label.css" />
+<link rel="stylesheet" href="//uedayou.net/SPARQLTimeliner/css/style.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
+
+<!-- Open links in new window/tab by default -->
+<base target="_blank" />
+</head>
+<body class="view">
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand"></a>
+      <ul class="nav">
+      </ul>
+      <ul class="nav pull-right">
+        <li>
+          <a class="js-embed" href="#">Embed Instructions</a>
+        </li>
+        <li>
+          <a href="http://uedayou.net/SPARQLTimeliner/" target="_blank">About</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="data-views">
+  <div class="controls">
+    <div class="toolbox hideme">
+      <form action="" method="GET" class="form-inline">
+        <div class="input-append text-query">
+          <input type="text" name="q" value="" class="span3" placeholder="Search data ..." class="search-query" />
+          <a class="js-show-toolbox" href="#"><span class="add-on"><i class="icon-search"></i></span></a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span8">
+      <div class="timeline"></div>
+      &nbsp;
+    </div>
+    <div class="span4">
+      <div class="map"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="loading js-loading"><i class="fa fa-refresh fa-spin"></i> Loading data...</div>
+
+
+<footer>
+<a href="http://uedayou.net/SPARQLTimeliner/">
+<strong>
+SPARQL Timeliner
+</strong>
+</a>
+は、SPARQLに対応した<a href="http://timeliner.okfnlabs.org/"><strong>Timeliner </strong></a>です。
+</footer>
+
+<div class="modal hide fade embed-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Embed Instructions</h3>
+  </div>
+  <div class="modal-body">
+    <p>Copy and paste the following into your web page</p>
+    <textarea style="width: 100%; height: 100px;" ></textarea>
+  </div>
+</div>
+
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/recline/vendor/jquery/1.7.1/jquery.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/recline/vendor/underscore/1.4.4/underscore.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/recline/vendor/underscore.deferred/0.4.0/underscore.deferred.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/recline/vendor/backbone/1.0.0/backbone.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/recline/vendor/moment/2.0.0/moment.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/recline/vendor/mustache/0.5.0-dev/mustache.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/recline/vendor/bootstrap/2.0.2/bootstrap.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/recline/dist/recline.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/leaflet/0.7.2/leaflet.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/leaflet.markercluster/leaflet.markercluster.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/vendor/leaflet.label/leaflet0.7/leaflet.label.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/js_sparql/timeline.sparqltimeliner.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/js_sparql/sparql.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/js_sparql/backend.sparql.client.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/js_sparql/sparqltimeliner.js"></script>
+<script type="text/javascript" src="//uedayou.net/SPARQLTimeliner/js/view.client.js"></script>
+
+<script>
+<!--
+(function () {
+  "use strict";
+  jQuery(function($) {
+    var state = {};
+    createTimeliner(state);
+  });
+})();
+
+-->
+</script>
+
+<!-- Google Analytics -->
+<script>
+<!--
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45357765-1', 'uedayou.net');
+  ga('send', 'pageview');
+-->
+</script>
+</body>
+</html>
+
