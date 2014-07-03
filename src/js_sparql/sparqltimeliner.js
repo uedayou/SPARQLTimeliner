@@ -27,8 +27,10 @@ recline.View.Map.prototype._setupMap = function(){
     var self = this;
     this.map = new L.Map(this.$map.get(0));
     
-    var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
-    var osmAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">';
+    //var mapUrl = "http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
+    var mapUrl = "http://j.tile.openstreetmap.jp/{z}/{x}/{y}.png";
+    //var osmAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">';
+    var osmAttribution = 'Map data &copy; OpenStreetMap contributors, Tiles Courtesy of <a href="http://osm.jp/" target="_blank">OpenStreetMap Japan</a>';
     var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
     this.map.addLayer(bg);
 
